@@ -19,6 +19,7 @@ int horaAnterior, minutoAnterior, segundoAnterior;
 // e ao pino 1 (VCC) do sensor
 DHT dht1(DHTPIN1, DHTTYPE);
 DHT dht2(DHTPIN2, DHTTYPE);
+float temperatura1, temperatura2, AnteriorTemperatura1, AnteriorTemperatura2
 
 //Portas digitais com LED
 int ledNivelDeAgua1 = 3;
@@ -75,9 +76,16 @@ void setup(){
 	pinMode(lampadaAquecimento2, OUTPUT);
 	*/
 	Serial.begin(9600); //Deve selecionar esta frequência de comunicação no monitor serial (lupa)
+	//Inicio da leitura do tempo
 	rtc.begin();
-	//dht1.begin();
-	//dht2.begin();
+	//Inicio da leitura dos sensores de umidade e temperatura
+	dht1.begin();
+	dht2.begin();
+	//Registro do primeiro valor das temperaturas
+	temperatura1 = dht1.readTemperature();
+	temperatura2 = dht2.readTemperature();
+	AnteriorTemperatura1 = temperatura1;
+	AnteriorTemperatura2 = temperatura2;
 	
 	//Leitura inicial do nivel de água
 	leituraSensorNivelDeAgua1 = digitalRead(sensorNivelDeAgua1);
@@ -215,9 +223,44 @@ void desligarLedNivelDeAgua2(){
 	}
 }
 
+void ligarLampadaAquecimento1(){
+	if(not AnteriorLampadaAquecimento1){
+		AnteriorLampadaAquecimento1 = 1;
+		digitalWrite(lampadaAquecimento1, HIGH);
+		Serial.println("Lampada de aquecimento 1 ligada.");
+	}
+}
+
+void desligarLampadaAquecimento1(){
+	if(AnteriorLampadaAquecimento1){
+		AnteriorLampadaAquecimento1 = 0;
+		digitalWrite(lampadaAquecimento1, LOW);
+		Serial.println("Lampada de aquecimento 1 desligada.");
+	}
+}
+
+void ligarLampadaAquecimento2(){
+	if(not AnteriorLampadaAquecimento2){
+		AnteriorLampadaAquecimento2 = 1;
+		digitalWrite(lampadaAquecimento2, HIGH);
+		Serial.println("Lampada de aquecimento 2 ligada.");
+	}
+}
+
+void desligarLampadaAquecimento2(){
+	if(AnteriorLampadaAquecimento2){
+		AnteriorLampadaAquecimento2 = 0;
+		digitalWrite(lampadaAquecimento2, LOW);
+		Serial.println("Lampada de aquecimento 2 desligada.");
+	}
+}
+
 void loop(){
 	//Condições referentes ao horario
 	t = rtc.getTime();
+	//Medida da temperatura
+	temperatura1 = dht1.readTemperature();
+	temperatura2 = dht2.readTemperature();
 	//Trecho de código que só vai funcionar entre 6:00am e 23:59pm
 	if(t.hour >= 6){
 		//Liga as lampadas led de cultivo
@@ -270,8 +313,22 @@ void loop(){
 		//Desliga as lampadas led de cultivo quando estiver de noite
 		desligarLampadasDeCultivo();
 	}
+	if(not isnan(temperatura1) and not isnan(temperatura2){
+		if(temperatura1 < 20){
+			ligarLampadaAquecimento1();
+		} else {
+			desligarLampadaAquecimento1();
+		}
+		if(temperatura2 < 20){
+			ligarLampadaAquecimento2();
+		} else {
+			desligarLampadaAquecimento2();
+		}
+	}
 	horaAnterior = t.hour;
 	minutoAnterior = t.min;
 	segundoAnterior = t.sec;
-	delay(500);
+	AnteriorTemperatura1 = temperatura1;
+	AnteriorTemperatura2 = temperatura2;
+	delay(1000);
 }
