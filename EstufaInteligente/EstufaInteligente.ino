@@ -1,4 +1,4 @@
-//Adicionar sensor de temperatura ligando lampada de aquecimento
+//se leitura da turbidez acima de 3.45 ligar bomba de nutrietes
 
 #include <DS3231.h>
 
@@ -19,7 +19,7 @@ int horaAnterior, minutoAnterior, segundoAnterior;
 // e ao pino 1 (VCC) do sensor
 DHT dht1(DHTPIN1, DHTTYPE);
 DHT dht2(DHTPIN2, DHTTYPE);
-float temperatura1, temperatura2, AnteriorTemperatura1, AnteriorTemperatura2
+float temperatura1, temperatura2, AnteriorTemperatura1, AnteriorTemperatura2;
 
 //Portas digitais com LED
 int ledNivelDeAgua1 = 3;
@@ -40,7 +40,7 @@ int bombaNutrientes2 = 7;
 int lampadaCultivo1 = 8;
 int lampadaCultivo2 = 9;
 int lampadaAquecimento1 = 10;
-int lampadaAquecimento2 = 11;
+int lampadaAquecimento2 = 13;
 //Variaveis do estado anterior Equipamentos ligados ao relé
 int AnteriorBombaCirculacao1 = 0;
 int AnteriorBombaCirculacao2 = 0;
@@ -56,6 +56,7 @@ int sensorNivelDeAgua1 = 6;
 int sensorNivelDeAgua2 = 7;
 int sensorDeTurbidez1 = A0;
 int sensorDeTurbidez2 = A1;
+int leituraSensorDeTurbidez1, leituraSensorDeTurbidez2;
 
 //Valores da leitura dos sensores
 bool leituraSensorNivelDeAgua1, leituraSensorNivelDeAgua2;
@@ -90,6 +91,10 @@ void setup(){
 	//Leitura inicial do nivel de água
 	leituraSensorNivelDeAgua1 = digitalRead(sensorNivelDeAgua1);
 	leituraSensorNivelDeAgua2 = digitalRead(sensorNivelDeAgua2);
+	
+	//Leitura inicial sensores de turbidez
+	leituraSensorDeTurbidez1 = analogRead(sensorDeTurbidez1);
+	leituraSensorDeTurbidez2 = analogRead(sensorDeTurbidez2);
 	
 	//Leitura dos tempos iniciais
 	horaAnterior = 0;
@@ -255,6 +260,38 @@ void desligarLampadaAquecimento2(){
 	}
 }
 
+void desligarBombaNutrientes1(){
+	if(AnteriorBombaNutrientes1){
+		AnteriorBombaNutrientes1 = 0;
+		digitalWrite(bombaNutrientes1, LOW);
+		Serial.println("Bomba de nutrientes 1 desligada.");
+	}
+}
+
+void ligarBombaNutrientes1(){
+	if(not AnteriorBombaNutrientes1){
+		AnteriorBombaNutrientes1 = 1;
+		digitalWrite(bombaNutrientes1, HIGH);
+		Serial.println("Bomba de nutrientes 1 ligada.");
+	}
+}
+
+void desligarBombaNutrientes2(){
+	if(AnteriorBombaNutrientes2){
+		AnteriorBombaNutrientes2 = 0;
+		digitalWrite(bombaNutrientes2, LOW);
+		Serial.println("Bomba de nutrientes 2 desligada.");
+	}
+}
+
+void ligarBombaNutrientes2(){
+	if(not AnteriorBombaNutrientes2){
+		AnteriorBombaNutrientes2 = 1;
+		digitalWrite(bombaNutrientes2, HIGH);
+		Serial.println("Bomba de nutrientes 2 ligada.");
+	}
+}
+
 void loop(){
 	//Condições referentes ao horario
 	t = rtc.getTime();
@@ -313,7 +350,7 @@ void loop(){
 		//Desliga as lampadas led de cultivo quando estiver de noite
 		desligarLampadasDeCultivo();
 	}
-	if(not isnan(temperatura1) and not isnan(temperatura2){
+	if(not isnan(temperatura1) and not isnan(temperatura2)){
 		if(temperatura1 < 20){
 			ligarLampadaAquecimento1();
 		} else {
@@ -325,10 +362,26 @@ void loop(){
 			desligarLampadaAquecimento2();
 		}
 	}
+	
+	//Leitura dos sensores de turbidez
+	if(leituraSensorDeTurbidez1 > 3.45){
+		ligarBombaNutrientes1();
+	} else {
+		desligarBombaNutrientes1();
+	}
+	if(leituraSensorDeTurbidez1 > 3.45){
+		ligarBombaNutrientes1();
+	} else {
+		desligarBombaNutrientes1();
+	}
 	horaAnterior = t.hour;
 	minutoAnterior = t.min;
 	segundoAnterior = t.sec;
 	AnteriorTemperatura1 = temperatura1;
 	AnteriorTemperatura2 = temperatura2;
+	Serial.print("Temperatura 1': ");
+	Serial.println(temperatura1);
+	Serial.print("Temperatura 2': ");
+	Serial.println(temperatura2);
 	delay(1000);
 }
