@@ -41,6 +41,9 @@ int lampadaCultivo1 = 8;
 int lampadaCultivo2 = 9;
 int lampadaAquecimento1 = 10;
 int lampadaAquecimento2 = 13;
+int ventoinha1 = 0;
+int ventoinha2 = 2;
+
 //Variaveis do estado anterior Equipamentos ligados ao relé
 int AnteriorBombaCirculacao1 = 0;
 int AnteriorBombaCirculacao2 = 0;
@@ -50,6 +53,8 @@ int AnteriorLampadaCultivo1 = 0;
 int AnteriorLampadaCultivo2 = 0;
 int AnteriorLampadaAquecimento1 = 0;
 int AnteriorLampadaAquecimento2 = 0;
+int AnteriorVentoinha1 = 0;
+int AnteriorVentoinha1 = 0;
 
 //Sensores
 int sensorNivelDeAgua1 = 6;
@@ -292,6 +297,38 @@ void ligarBombaNutrientes2(){
 	}
 }
 
+void desligarVentoinha1(){
+	if(AnteriorVentoinha1){
+		AnteriorVentoinha1 = 0;
+		digitalWrite(ventoinha1, LOW);
+		Serial.println("Ventoinha 1 desligada.");
+	}
+}
+
+void ligarVentoinha1(){
+	if(not AnteriorVentoinha1){
+		AnteriorVentoinha1 = 1;
+		digitalWrite(ventoinha1, HIGH);
+		Serial.println("Ventoinha 1 ligada.");
+	}
+}
+
+void desligarVentoinha2(){
+	if(AnteriorVentoinha2){
+		AnteriorVentoinha2 = 0;
+		digitalWrite(ventoinha2, LOW);
+		Serial.println("Ventoinha 2 desligada.");
+	}
+}
+
+void ligarVentoinha2(){
+	if(not AnteriorVentoinha2){
+		AnteriorVentoinha2 = 1;
+		digitalWrite(ventoinha2, HIGH);
+		Serial.println("Ventoinha 2 ligada.");
+	}
+}
+
 void loop(){
 	//Condições referentes ao horario
 	t = rtc.getTime();
@@ -350,16 +387,22 @@ void loop(){
 		//Desliga as lampadas led de cultivo quando estiver de noite
 		desligarLampadasDeCultivo();
 	}
+	//Executar ações com variação da temperatura
 	if(not isnan(temperatura1) and not isnan(temperatura2)){
 		if(temperatura1 < 20){
 			ligarLampadaAquecimento1();
+			desligarVentoinha1();
 		} else {
 			desligarLampadaAquecimento1();
+			ligarVentoinha1();
 		}
 		if(temperatura2 < 20){
 			ligarLampadaAquecimento2();
+			desligarVentoinha2();
+			
 		} else {
 			desligarLampadaAquecimento2();
+			ligarVentoinha2();
 		}
 	}
 	
@@ -369,16 +412,18 @@ void loop(){
 	} else {
 		desligarBombaNutrientes1();
 	}
-	if(leituraSensorDeTurbidez1 > 3.45){
-		ligarBombaNutrientes1();
+	if(leituraSensorDeTurbidez2 > 3.45){
+		ligarBombaNutrientes2();
 	} else {
-		desligarBombaNutrientes1();
+		desligarBombaNutrientes2();
 	}
 	horaAnterior = t.hour;
 	minutoAnterior = t.min;
 	segundoAnterior = t.sec;
 	AnteriorTemperatura1 = temperatura1;
 	AnteriorTemperatura2 = temperatura2;
+	leituraSensorDeTurbidez1 = analogRead(sensorDeTurbidez1);
+	leituraSensorDeTurbidez2 = analogRead(sensorDeTurbidez2);
 	Serial.print("Temperatura 1': ");
 	Serial.println(temperatura1);
 	Serial.print("Temperatura 2': ");
