@@ -60,7 +60,7 @@ int AnteriorVentoinha2 = 0;
 int sensorNivelDeAgua1 = 6;
 int sensorNivelDeAgua2 = 7;
 int sensorDeTurbidez1 = A0;
-int sensorDeTurbidez2 = A1;
+int sensorDeTurbidez2 = A3;
 int leituraSensorDeTurbidez1, leituraSensorDeTurbidez2;
 
 //Valores da leitura dos sensores
@@ -407,12 +407,12 @@ void loop(){
 	}
 	
 	//Leitura dos sensores de turbidez
-	if(leituraSensorDeTurbidez1 > 3.45){
+	if(leituraSensorDeTurbidez1 > 712){
 		ligarBombaNutrientes1();
 	} else {
 		desligarBombaNutrientes1();
 	}
-	if(leituraSensorDeTurbidez2 > 3.45){
+	if(leituraSensorDeTurbidez2 > 910){
 		ligarBombaNutrientes2();
 	} else {
 		desligarBombaNutrientes2();
@@ -434,4 +434,11 @@ void loop(){
 	Serial.println(leituraSensorDeTurbidez2);
 	Serial.println("");
 	delay(2000);
+	//Turbidez na agua 700, na solução 712
 }
+//711^712 agua de mesa tratada com nutriente
+//711^721 agua de torneira com nutrientes
+//715^717^726 agua sistema exterior
+//715^716 água torneira
+
+//Sensor turb 2 : 910~912 água pura / 906~908 com nutriente novo 
