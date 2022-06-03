@@ -1,4 +1,4 @@
-//se leitura da turbidez acima de 3.45 ligar bomba de nutrietes
+//unir lampadaCultivo1 e 2
 
 #include <DS3231.h>
 
@@ -10,7 +10,7 @@ int horaAnterior, minutoAnterior, segundoAnterior;
 //Trecho de inicialização do sensor de umidade e temperatura
 #include "DHT.h"
 #define DHTPIN1 A1 // pino que estamos conectado
-#define DHTPIN2 A3
+#define DHTPIN2 A2 
 #define DHTTYPE DHT11 // DHT 11
 // Conecte pino 1 do sensor (esquerda) ao +5V
 // Conecte pino 2 do sensor ao pino de dados definido em seu Arduino
@@ -54,7 +54,7 @@ int AnteriorLampadaCultivo2 = 0;
 int AnteriorLampadaAquecimento1 = 0;
 int AnteriorLampadaAquecimento2 = 0;
 int AnteriorVentoinha1 = 0;
-int AnteriorVentoinha1 = 0;
+int AnteriorVentoinha2 = 0;
 
 //Sensores
 int sensorNivelDeAgua1 = 6;
@@ -389,14 +389,14 @@ void loop(){
 	}
 	//Executar ações com variação da temperatura
 	if(not isnan(temperatura1) and not isnan(temperatura2)){
-		if(temperatura1 < 20){
+		if(temperatura1 < 23){
 			ligarLampadaAquecimento1();
 			desligarVentoinha1();
 		} else {
 			desligarLampadaAquecimento1();
 			ligarVentoinha1();
 		}
-		if(temperatura2 < 20){
+		if(temperatura2 < 23){
 			ligarLampadaAquecimento2();
 			desligarVentoinha2();
 			
@@ -428,5 +428,10 @@ void loop(){
 	Serial.println(temperatura1);
 	Serial.print("Temperatura 2': ");
 	Serial.println(temperatura2);
-	delay(1000);
+	Serial.print("Turbidez 1': ");
+	Serial.println(leituraSensorDeTurbidez1);
+	Serial.print("Turbidez 2': ");
+	Serial.println(leituraSensorDeTurbidez2);
+	Serial.println("");
+	delay(2000);
 }
