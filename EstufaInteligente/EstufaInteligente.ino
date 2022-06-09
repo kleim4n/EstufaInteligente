@@ -356,13 +356,13 @@ void loop(){
 			}
 			//Verifica se o nivel da água estava OK antes de ligar a bombaCirculacao2
 			if(leituraSensorNivelDeAgua2){
-				ligarBombaCirculacao1();
-				desligarLedNivelDeAgua1();
+				ligarBombaCirculacao2();
+				desligarLedNivelDeAgua2();
 			}
 			//Acende as LEDs de sinalização de baixo nível de água se a leitura do nivel for baixa
 			else{
-				desligarBombaCirculacao1();
-				ligarLedNivelDeAgua1();
+				desligarBombaCirculacao2();
+				ligarLedNivelDeAgua2();
 			}
 		}
 		//Realiza a leitura do nível de água enquanto a bomba de água estiver desligada
@@ -370,17 +370,13 @@ void loop(){
 		leituraSensorNivelDeAgua2 = digitalRead(sensorNivelDeAgua2);
 		//Apaga as LEDs de sinalização de baixo nível de água se a leitura do nivel for alto
 		if(leituraSensorNivelDeAgua1){
-			Serial.println("Nivel de agua 1 ALTO.");
 			desligarLedNivelDeAgua1();
 		} else {
-			Serial.println("Nivel de agua 1 BAIXO.");
 			ligarLedNivelDeAgua1();
 		}
 		if(leituraSensorNivelDeAgua2){
-			Serial.println("Nivel de agua 2 ALTO.");
 			desligarLedNivelDeAgua2();
 		} else {
-			Serial.println("Nivel de agua 2 BAIXO.");
 			ligarLedNivelDeAgua2();
 		}
 	} else {
