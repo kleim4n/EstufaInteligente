@@ -277,7 +277,7 @@ void ligarVentoinha2(){
 
 void alterarSinalEntrada(){
 	if(Serial.available() > 0){
-		Serial.println("1- Nivel de agua 1\n2-Nivel de agua 2\n3- Temperatura1\n4 - Temperatura2\n5 - Turbidez 1\n6- Turbidez 2\n7- Hora \n8- Minuto \nDigite o sinal que deseja alterar: ");
+		Serial.println("\n1- Nivel de agua 1\n2-Nivel de agua 2\n3- Temperatura1\n4 - Temperatura2\n5 - Turbidez 1\n6- Turbidez 2\n7- Hora \n8- Minuto \nDigite o sinal que deseja alterar: ");
 		delay(100);
 		int opt = Serial.parseInt();
 		if(opt != 0){
