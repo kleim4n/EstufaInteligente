@@ -388,7 +388,7 @@ void loop(){
 					desligarBombaCirculacao2();
 					ligarLedNivelDeAgua2();
 				}
-			}else if(hora == horaLigar)(
+			}else if(hora == horaLigar){
 				horaLigar = horaLigar + 3;
 				if(horaLigar > 18){
 					horaLigar = 6;
@@ -396,6 +396,11 @@ void loop(){
 				Serial.print("\nPróximo horário para ligar será às ");
 				Serial.print(horaLigar);
 				Serial.println("h.\n");
+				
+			}
+			if(minuto > 20){
+				desligarBombaCirculacao1();
+				desligarBombaCirculacao2();
 			}
 		}
 		//Apaga as LEDs de sinalização de baixo nível de água se a leitura do nivel for alto
