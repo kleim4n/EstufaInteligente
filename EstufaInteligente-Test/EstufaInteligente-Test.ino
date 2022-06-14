@@ -1,5 +1,5 @@
 //Gabriel Kleiman
-int horaAnterior, minutoAnterior, segundoAnterior, hora, minuto, segundo;
+int horaAnterior, minutoAnterior, segundoAnterior, hora, minuto, segundo, horaLigar = 6;
 
 //Variaveis referentes ao tempo
 float temperatura1, temperatura2, AnteriorTemperatura1, AnteriorTemperatura2;
@@ -81,7 +81,7 @@ void setup(){
 	
 	//Leitura dos tempos iniciais
 	horaAnterior = 0;
-	hora = 7;
+	hora = 5;
 	minutoAnterior = 0;
 	minuto = 15;
 	segundoAnterior = 0;
@@ -325,23 +325,32 @@ void alterarSinalEntrada(){
 				Serial.print("Turbidez 2 alterado para ");
 				Serial.println(leituraSensorDeTurbidez2);
 			} else if(opt == 7){
-        if(hora > 6){
-          hora = 0;
-        } else {
-          hora = 7;
-        }
-        Serial.print("Hora definida para ");
-        Serial.println(hora);
+				/*
+				if(hora > 6){
+					hora = 0;
+				} else {
+					hora = 7;
+				}*/
+				hora = hora + 1;
+				if(hora >= 24){
+					hora = 0;
+				}
+				Serial.print("Hora definida para ");
+				Serial.println(hora);
 			} else if(opt == 8){
-        if(minuto > 20){
-          minuto = 15;
-        } else {
-          minuto = 45;
-        }
-        Serial.print("Minuto definido para ");
-        Serial.println(minuto);
-     }
-
+				/*
+				if(minuto > 20){
+					minuto = 15;
+				} else {
+					minuto = 45;
+				}*/
+				minuto = minuto + 15;
+				if(minuto >= 60){
+					minuto = 0;
+				}
+				Serial.print("Minuto definido para ");
+				Serial.println(minuto);
+			}
 		}
 	}
 }
@@ -357,26 +366,36 @@ void loop(){
 		}
 		
 		//Liga as bombas de água por 30 minutos a cada 1h
-		if(minuto < 20){
-			//Verifica se o nivel da água estava OK antes de ligar a bombaCirculacao1
-			if(leituraSensorNivelDeAgua1){
-				ligarBombaCirculacao1();
-				desligarLedNivelDeAgua1();
-			}
-			//Acende as LEDs de sinalização de baixo nível de água se a leitura do nivel for baixa
-			else{
-				desligarBombaCirculacao1();
-				ligarLedNivelDeAgua1();
-			}
-			//Verifica se o nivel da água estava OK antes de ligar a bombaCirculacao2
-			if(leituraSensorNivelDeAgua2){
-				ligarBombaCirculacao2();
-				desligarLedNivelDeAgua2();
-			}
-			//Acende as LEDs de sinalização de baixo nível de água se a leitura do nivel for baixa
-			else{
-				desligarBombaCirculacao2();
-				ligarLedNivelDeAgua2();
+		if(hora == horaLigar){
+			if(minuto <= 20){
+				//Verifica se o nivel da água estava OK antes de ligar a bombaCirculacao1
+				if(leituraSensorNivelDeAgua1){
+					ligarBombaCirculacao1();
+					desligarLedNivelDeAgua1();
+				}
+				//Acende as LEDs de sinalização de baixo nível de água se a leitura do nivel for baixa
+				else{
+					desligarBombaCirculacao1();
+					ligarLedNivelDeAgua1();
+				}
+				//Verifica se o nivel da água estava OK antes de ligar a bombaCirculacao2
+				if(leituraSensorNivelDeAgua2){
+					ligarBombaCirculacao2();
+					desligarLedNivelDeAgua2();
+				}
+				//Acende as LEDs de sinalização de baixo nível de água se a leitura do nivel for baixa
+				else{
+					desligarBombaCirculacao2();
+					ligarLedNivelDeAgua2();
+				}
+			}else if(hora == horaLigar)(
+				horaLigar = horaLigar + 3;
+				if(horaLigar > 18){
+					horaLigar = 6;
+				}
+				Serial.print("\nPróximo horário para ligar será às ");
+				Serial.print(horaLigar);
+				Serial.println("h.\n");
 			}
 		}
 		//Apaga as LEDs de sinalização de baixo nível de água se a leitura do nivel for alto
@@ -438,3 +457,5 @@ void loop(){
 //715^716 água torneira
 
 //Sensor turb 2 : 910~912 água pura / 906~908 com nutriente novo 
+
+//20 minutos a cada 3 horas entre 6h e 18h
