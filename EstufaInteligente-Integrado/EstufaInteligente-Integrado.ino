@@ -25,8 +25,8 @@ float temperatura1, temperatura2, AnteriorTemperatura1, AnteriorTemperatura2;
 //Portas digitais com LED
 int ledNivelDeAgua1 = 3;
 int ledNivelDeAgua2 = 5;
-int ledNutrientes1 = 2;
-int ledNutrientes2 = 0;
+//int ledNutrientes1 = 2; //Vão ser acionados nas bombas de nutrientes
+//int ledNutrientes2 = 0; //
 //Variaveis do estado anterior Portas digitais com LED
 int AnteriorLedNivelDeAgua1 = 0;
 int AnteriorLedNivelDeAgua2 = 0;
@@ -38,7 +38,7 @@ int bombaCirculacao1 = 11;
 int bombaCirculacao2 = 12;
 int bombaNutrientes1 = 6;
 int bombaNutrientes2 = 7;
-int lampadaCultivo1 = 8;
+int lampadaCultivo1 = 8;//Unificar em uma lampada
 int lampadaCultivo2 = 9;
 int lampadaAquecimento1 = 10;
 int lampadaAquecimento2 = 13;
@@ -92,8 +92,6 @@ void setup(){
     //Registro do primeiro valor das temperaturas
     temperatura1 = 25;
     temperatura2 = 25;
-    AnteriorTemperatura1 = temperatura1;
-    AnteriorTemperatura2 = temperatura2;
   
     //Leitura inicial do nivel de água
     leituraSensorNivelDeAgua1 = 1;
@@ -111,8 +109,6 @@ void setup(){
     //Registro do primeiro valor das temperaturas
     temperatura1 = dht1.readTemperature();
     temperatura2 = dht2.readTemperature();
-    AnteriorTemperatura1 = temperatura1;
-    AnteriorTemperatura2 = temperatura2;
   
     //Leitura inicial do nivel de água
     leituraSensorNivelDeAgua1 = digitalRead(sensorNivelDeAgua1);
@@ -122,7 +118,10 @@ void setup(){
     leituraSensorDeTurbidez1 = analogRead(sensorDeTurbidez1);
     leituraSensorDeTurbidez2 = analogRead(sensorDeTurbidez2);
   }
-  
+
+  //Definir temperatura
+  AnteriorTemperatura1 = temperatura1;
+  AnteriorTemperatura2 = temperatura2;
   //Definir tempos anteriores iniciais
   horaAnterior = 0;
   minutoAnterior = 0;
@@ -522,3 +521,5 @@ void loop(){
 //Sensor turb 2 : 910~912 água pura / 906~908 com nutriente novo 
 
 //20 minutos a cada 3 horas entre 6h e 18h
+
+//1 2 4 Digitais 
