@@ -3,7 +3,10 @@
 //Entrar em modo simulação
 bool iniciarSimulacao = true;
 
-#include <DS3231.h>;
+//Ligar ou desligar microambientes
+bool microAmbiente1 = true, microAmbiente2 = false;
+
+#include <DS3231.h>
 DS3231 rtc(SDA, SCL);
 Time t;
 int horaAnterior, minutoAnterior, segundoAnterior, hora, minuto, segundo, horaLigar = 6;
@@ -30,8 +33,8 @@ int ledNivelDeAgua2 = 5;
 //Variaveis do estado anterior Portas digitais com LED
 int AnteriorLedNivelDeAgua1 = 0;
 int AnteriorLedNivelDeAgua2 = 0;
-int AnteriorLedNutrientes1 = 0;
-int AnteriorLedNutrientes2 = 0;
+//int AnteriorLedNutrientes1 = 0;
+//int AnteriorLedNutrientes2 = 0;
 
 //Equipamentos ligados ao relé
 int bombaCirculacao1 = 11;
@@ -42,7 +45,7 @@ int lampadaCultivo1 = 8;//Unificar em uma lampada
 int lampadaCultivo2 = 9;
 int lampadaAquecimento1 = 10;
 int lampadaAquecimento2 = 13;
-int ventoinha1 = 0;
+int ventoinha1 = 4;
 int ventoinha2 = 2;
 
 //Variaveis do estado anterior Equipamentos ligados ao relé
@@ -131,12 +134,12 @@ void setup(){
 
 //Função para ligar as lampadas de cultivo
 void ligarLampadasDeCultivo(){
-  if(not AnteriorLampadaCultivo1){
+  if(not AnteriorLampadaCultivo1 and microAmbiente1){
     AnteriorLampadaCultivo1 = 1;
     digitalWrite(lampadaCultivo1, HIGH);
     Serial.println("Lampada de cultivo 1 ligada.");
   }
-  if(not AnteriorLampadaCultivo2){
+  if(not AnteriorLampadaCultivo2 and microAmbiente2){
     AnteriorLampadaCultivo2 = 1;
     digitalWrite(lampadaCultivo2, HIGH);
     Serial.println("Lampada de cultivo 2 ligada.");
@@ -157,7 +160,7 @@ void desligarLampadasDeCultivo(){
 }
 
 void ligarBombaCirculacao1(){
-  if(not AnteriorBombaCirculacao1){
+  if(not AnteriorBombaCirculacao1 and microAmbiente1){
     AnteriorBombaCirculacao1 = 1;
     digitalWrite(bombaCirculacao1, HIGH);
     Serial.println("Bomba de circulação 1 ligada.");
@@ -165,7 +168,7 @@ void ligarBombaCirculacao1(){
 }
 
 void ligarBombaCirculacao2(){
-  if(not AnteriorBombaCirculacao2){
+  if(not AnteriorBombaCirculacao2 and microAmbiente2){
     AnteriorBombaCirculacao2 = 1;
     digitalWrite(bombaCirculacao2, HIGH);
     Serial.println("Bomba de circulação 2 ligada.");
@@ -189,7 +192,7 @@ void desligarBombaCirculacao2(){
 }
 
 void ligarLedNivelDeAgua1(){
-  if(not AnteriorLedNivelDeAgua1){
+  if(not AnteriorLedNivelDeAgua1 and microAmbiente1){
     AnteriorLedNivelDeAgua1 = 1;
     digitalWrite(ledNivelDeAgua1, HIGH);
     Serial.println("Led nivel de agua 1 ligada.");
@@ -205,7 +208,7 @@ void desligarLedNivelDeAgua1(){
 }
 
 void ligarLedNivelDeAgua2(){
-  if(not AnteriorLedNivelDeAgua2){
+  if(not AnteriorLedNivelDeAgua2 and microAmbiente2){
     AnteriorLedNivelDeAgua2 = 1;
     digitalWrite(ledNivelDeAgua2, HIGH);
     Serial.println("Led nivel de agua 2 ligada.");
@@ -221,7 +224,7 @@ void desligarLedNivelDeAgua2(){
 }
 
 void ligarLampadaAquecimento1(){
-  if(not AnteriorLampadaAquecimento1){
+  if(not AnteriorLampadaAquecimento1 and microAmbiente1){
     AnteriorLampadaAquecimento1 = 1;
     digitalWrite(lampadaAquecimento1, HIGH);
     Serial.println("Lampada de aquecimento 1 ligada.");
@@ -237,7 +240,7 @@ void desligarLampadaAquecimento1(){
 }
 
 void ligarLampadaAquecimento2(){
-  if(not AnteriorLampadaAquecimento2){
+  if(not AnteriorLampadaAquecimento2 and microAmbiente2){
     AnteriorLampadaAquecimento2 = 1;
     digitalWrite(lampadaAquecimento2, HIGH);
     Serial.println("Lampada de aquecimento 2 ligada.");
@@ -261,7 +264,7 @@ void desligarBombaNutrientes1(){
 }
 
 void ligarBombaNutrientes1(){
-  if(not AnteriorBombaNutrientes1){
+  if(not AnteriorBombaNutrientes1 and microAmbiente1){
     AnteriorBombaNutrientes1 = 1;
     digitalWrite(bombaNutrientes1, HIGH);
     Serial.println("Bomba de nutrientes 1 ligada.");
@@ -277,7 +280,7 @@ void desligarBombaNutrientes2(){
 }
 
 void ligarBombaNutrientes2(){
-  if(not AnteriorBombaNutrientes2){
+  if(not AnteriorBombaNutrientes2 and microAmbiente2){
     AnteriorBombaNutrientes2 = 1;
     digitalWrite(bombaNutrientes2, HIGH);
     Serial.println("Bomba de nutrientes 2 ligada.");
@@ -293,7 +296,7 @@ void desligarVentoinha1(){
 }
 
 void ligarVentoinha1(){
-  if(not AnteriorVentoinha1){
+  if(not AnteriorVentoinha1 and microAmbiente1){
     AnteriorVentoinha1 = 1;
     digitalWrite(ventoinha1, HIGH);
     Serial.println("Ventoinha 1 ligada.");
@@ -309,7 +312,7 @@ void desligarVentoinha2(){
 }
 
 void ligarVentoinha2(){
-  if(not AnteriorVentoinha2){
+  if(not AnteriorVentoinha2 and microAmbiente2){
     AnteriorVentoinha2 = 1;
     digitalWrite(ventoinha2, HIGH);
     Serial.println("Ventoinha 2 ligada.");
@@ -523,3 +526,5 @@ void loop(){
 //20 minutos a cada 3 horas entre 6h e 18h
 
 //1 2 4 Digitais 
+
+//Adicionar ligar e desligar microambiente
